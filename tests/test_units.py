@@ -30,7 +30,7 @@ def test_good_points(client):
     points = int(club['points'])
     wtr = client.post('/purchasePlaces',
                       data={'club': 'Iron Temple',
-                            'competition': 'Spring Festival',
+                            'competition': 'Futur Competition',
                             'places': '3'}
                       )
     updated_points = int(club['points'])
@@ -43,7 +43,7 @@ def test_bad_points(client):
     points = int(club['points'])
     wtr = client.post('/purchasePlaces',
                       data={'club': 'Iron Temple',
-                            'competition': 'Spring Festival',
+                            'competition': 'Futur Competition',
                             'places': '5'}
                       )
     updated_points = int(club['points'])
@@ -56,7 +56,7 @@ def test_thirteen_points(client):
     points = int(club['points'])
     wtr = client.post('/purchasePlaces',
                       data={'club': 'Simply Lift',
-                            'competition': 'Spring Festival',
+                            'competition': 'Futur Competition',
                             'places': '13'}
                       )
     updated_points = int(club['points'])
@@ -69,8 +69,21 @@ def test_twelve_points(client):
     points = int(club['points'])
     wtr = client.post('/purchasePlaces',
                       data={'club': 'Simply Lift',
-                            'competition': 'Spring Festival',
+                            'competition': 'Futur Competition',
                             'places': '12'}
                       )
     updated_points = int(club['points'])
     assert updated_points != points
+
+
+def test_past_competition(client):
+    """"""
+    club = [c for c in server.clubs if c['name'] == 'Simply Lift'][0]
+    points = int(club['points'])
+    wtr = client.post('/purchasePlaces',
+                      data={'club': 'Simply Lift',
+                            'competition': 'Fall Classic',
+                            'places': '12'}
+                      )
+    updated_points = int(club['points'])
+    assert updated_points == points
