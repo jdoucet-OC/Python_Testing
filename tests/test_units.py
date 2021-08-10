@@ -78,7 +78,7 @@ def test_past_competition(client):
 
 
 def test_points_update(client):
-
+    """"""
     club = [c for c in server.clubs if c['name'] == 'Simply Lift'][0]
     points = int(club['points'])
     wtr = client.post('/purchasePlaces',
@@ -88,3 +88,11 @@ def test_points_update(client):
                       )
     updated_points = int(club['points'])
     assert updated_points != points
+
+
+def test_point_display(client):
+    """"""
+    wtr = client.post('/showSummary',
+                      data={'email': 'admin@irontemple.com'})
+    points = b"Points"
+    assert points in wtr.data
