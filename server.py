@@ -54,20 +54,23 @@ def purchasePlaces():
     placesRequired = int(request.form['places'])
     compdate = competition['date']
     today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    if compdate < today:
-        flash('Competition already over')
-        return render_template('booking.html', club=club, competition=competition)
-    if placesRequired > 12:
-        flash('You cannot book more than 12 places')
-        return render_template('booking.html', club=club, competition=competition)
-    if placesRequired > int(club['points']) or placesRequired < 0:
-        flash('Not enough points')
-        return render_template('booking.html', club=club, competition=competition)
-    else:
-        competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
-        club['points'] = int(club['points']) - placesRequired
-        flash('Great-booking complete!')
-        return render_template('welcome.html', club=club, competitions=competitions)
+    messages = ['Competition already over',
+                'You cannot book more than 12 places',
+                'Not enough points']
+    conditions = [compdate < today,
+                  placesRequired > 12,
+                  placesRequired > int(club['points']) or placesRequired < 0]
+    for condition, message in zip(conditions, messages):
+        result = condition
+        if result:
+            flash(message)
+    for condition in conditions:
+        if condition:
+            return render_template('booking.html', club=club, competition=competition)
+    competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
+    club['points'] = int(club['points']) - placesRequired
+    flash('Great-booking complete!')
+    return render_template('welcome.html', club=club, competitions=competitions)
 
 
 # TODO: Add route for points display

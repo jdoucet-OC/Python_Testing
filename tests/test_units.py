@@ -26,64 +26,65 @@ def test_bad_email(client):
 
 def test_good_points(client):
     """"""
-    club = [c for c in server.clubs if c['name'] == 'Iron Temple'][0]
-    points = int(club['points'])
     wtr = client.post('/purchasePlaces',
                       data={'club': 'Iron Temple',
                             'competition': 'Futur Competition',
                             'places': '3'}
                       )
-    updated_points = int(club['points'])
-    assert points != updated_points
+    assert wtr.status_code == 200
 
 
 def test_bad_points(client):
     """"""
-    club = [c for c in server.clubs if c['name'] == 'Iron Temple'][0]
-    points = int(club['points'])
     wtr = client.post('/purchasePlaces',
                       data={'club': 'Iron Temple',
                             'competition': 'Futur Competition',
                             'places': '5'}
                       )
-    updated_points = int(club['points'])
-    assert updated_points == points
+    message = b"Not enough points"
+    assert message in wtr.data
 
 
 def test_thirteen_points(client):
     """"""
-    club = [c for c in server.clubs if c['name'] == 'Simply Lift'][0]
-    points = int(club['points'])
     wtr = client.post('/purchasePlaces',
                       data={'club': 'Simply Lift',
                             'competition': 'Futur Competition',
                             'places': '13'}
                       )
-    updated_points = int(club['points'])
-    assert updated_points == points
+    message = b"You cannot book more than 12 places"
+    assert message in wtr.data
 
 
 def test_twelve_points(client):
+    """"""
+    wtr = client.post('/purchasePlaces',
+                      data={'club': 'Simply Lift',
+                            'competition': 'Futur Competition',
+                            'places': '12'}
+                      )
+    assert wtr.status_code == 200
+
+
+def test_past_competition(client):
+    """"""
+    wtr = client.post('/purchasePlaces',
+                      data={'club': 'Simply Lift',
+                            'competition': 'Fall Classic',
+                            'places': '12'}
+                      )
+    message = b"Competition already over"
+    assert message in wtr.data
+
+
+def test_points_update(client):
     """"""
     club = [c for c in server.clubs if c['name'] == 'Simply Lift'][0]
     points = int(club['points'])
     wtr = client.post('/purchasePlaces',
                       data={'club': 'Simply Lift',
                             'competition': 'Futur Competition',
-                            'places': '12'}
+                            'places': '1'}
                       )
     updated_points = int(club['points'])
     assert updated_points != points
-
-
-def test_past_competition(client):
-    """"""
-    club = [c for c in server.clubs if c['name'] == 'Simply Lift'][0]
-    points = int(club['points'])
-    wtr = client.post('/purchasePlaces',
-                      data={'club': 'Simply Lift',
-                            'competition': 'Fall Classic',
-                            'places': '12'}
-                      )
-    updated_points = int(club['points'])
-    assert updated_points == points
