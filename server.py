@@ -61,7 +61,7 @@ def purchasePlaces():
                 'Not enough points']
     conditions = [compdate < today,
                   placesRequired > 12,
-                  placesRequired > int(club['points']) or placesRequired < 0]
+                  placesRequired*3 > int(club['points']) or placesRequired < 0]
     for condition, message in zip(conditions, messages):
         result = condition
         if result:
@@ -70,7 +70,7 @@ def purchasePlaces():
         if condition:
             return render_template('booking.html', club=club, competition=competition)
     competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
-    club['points'] = int(club['points']) - placesRequired
+    club['points'] = int(club['points']) - placesRequired*3
     flash('Great-booking complete!')
     return render_template('welcome.html', club=club,
                            competitions=competitions, clubs=clubs)
