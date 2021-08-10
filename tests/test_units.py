@@ -78,7 +78,7 @@ def test_past_competition(client):
 
 
 def test_points_update(client):
-    """"""
+    """ """
     club = [c for c in server.clubs if c['name'] == 'Simply Lift'][0]
     points = int(club['points'])
     wtr = client.post('/purchasePlaces',
