@@ -40,4 +40,5 @@ def test_user(client):
     updated_points = int(club['points'])
     assert wtr.status_code == 200
     assert updated_points == 1
+    assert updated_points != points
     assert b"Name : " in wtr.data
